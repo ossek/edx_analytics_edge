@@ -63,3 +63,38 @@ nrow(subset(cps,cps$MetroArea == 'San Francisco-Oakland-Fremont, CA'))
 
 #metro with highest proportion of hispanic responders
 sort(tapply(cps$Hispanic,cps$MetroArea,mean))
+
+#Number of metro areas where at least 20% of interviewees are asian
+percentAsianByMetro = as.data.frame(sort(tapply(cps$Race == "Asian",cps$MetroArea,mean)))
+colnames(percentAsianByMetro) <- c('percent')
+nrow(subset(percentAsianByMetro,percentAsianByMetro$percent >= .2))
+
+#metro area with smallest percent having high school diploma
+sort(tapply(cps$Education == "No high school diploma", cps$MetroArea, mean,na.rm=TRUE))
+
+#merge in country of birth info
+str(cps)
+cps = merge(cps, CountryMap, by.x="CountryOfBirthCode", by.y="Code", all.x=TRUE)
+
+#most common country of birth?
+sort(table(cps$Country))
+
+#percent of people from New York-Northern New Jersey-Long Island, NY-NJ-PA
+## that have a non-us country of birth (excluding missing country of birth)
+nymetro = subset(cps,cps$MetroArea == 'New York-Northern New Jersey-Long Island, NY-NJ-PA' & !is.na(cps$Country))
+nymetro$BornInUs = nymetro$Country == 'United States'
+1- mean(nymetro$BornInUs)
+
+# metro area with largest number of responders having birth country in India
+sort(tapply(cps$Country == 'India',cps$MetroArea,sum,na.rm = TRUE))
+# metro area with largest number of responders having birth country in Brazil
+sort(tapply(cps$Country == 'Brazil',cps$MetroArea,sum,na.rm = TRUE))
+# metro area with largest number of responders having birth country in Somalia
+sort(tapply(cps$Country == 'Somalia',cps$MetroArea,sum,na.rm = TRUE))
+
+85.3 - (41+0.59*77)
+98.6 - (41+.59*85)
+94 - (41+.59*95.5)
+((5.46 )/(63.2))*(-0.499)
+-.0431*101.8
+19.94+4.388

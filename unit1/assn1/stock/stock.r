@@ -46,4 +46,5 @@ abline(v=as.Date(c("1997-11-01")), lwd=1,col = "red")
 #use tapply to get monthly means
 tapply(IBM$StockPrice,months(IBM$Date),mean)
 mean(IBM$StockPrice)
+# remembering that order was : dataFrameList = list(IBM,Boeing,GE,CocaCola,ProctorGamble)
 lapply(dataFrameList,function(dataframe){tapply(dataframe$StockPrice,months(dataframe$Date),mean)})
