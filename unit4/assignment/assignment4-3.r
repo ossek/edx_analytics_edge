@@ -61,4 +61,47 @@ smallCensusTrain = censusTrain[sample(nrow(censusTrain), 2000), ]
 set.seet(1)
 censusForest = randomForest(data = smallCensusTrain,over50k ~ .)
 #Remember that you don't need a "type" argument when making predictions with a random forest model if you want to use a threshold of 0.5
-censusForestPredictions = 
+censusForestPredictions = predict(censusForest,newdata = censusTest)
+censusForestPredictionsMatrix = as.matrix(table(censusTest$over50k,censusForestPredictions))
+censusForestPredictionsAcc = Reduce(function(summ,rowcolnum) summ + censusForestPredictionsMatrix[rowcolnum,rowcolnum],
+                              seq(nrow(censusForestPredictionsMatrix)),0) / nrow(censusTest)
+censusForestPredictionsAcc
+
+#3.2
+vu = varUsed(censusForest, count=TRUE)
+vusorted = sort(vu, decreasing = FALSE, index.return = TRUE)
+dotchart(vusorted$x, names(censusForest$forest$xlevels[vusorted$ix]))
+
+#3.3
+varImpPlot(censusForest)
+
+#4.1
+# method cv for cross validation, number=10 for 10 folds
+library(caret)
+library(e1071)
+set.seed(2)
+numFolds = trainControl(method="cv",number=10)
+# define cp params to test from 0.002 to .1 in increments of .002
+cartGrid = expand.grid( .cp = seq(0.002,0.1,0.002))
+
+#use method rpart repeatedly
+trained = train(over50k ~ ., data = censusTrain,method="rpart",trControl = numFolds,tuneGrid = cartGrid)
+#will show suggested cp value
+trained
+
+#4.2
+
+censusCart = rpart(method = "class",data = censusTrain,over50k ~ .,cp = .002)
+censusCartPredictions = predict(censusCart,newdata=censusTest,type = "class") #class arg is like using threshold .5 for cart
+length(censusCartPredictions)
+length(censusTest$over50k)
+length(censusTrain$over50k)
+censusCartPredictionsMatrix = as.matrix(table(censusTest$over50k,censusCartPredictions))
+censusCartPredictionsMatrix
+
+censusCartAcc = Reduce(function(summ,rowcolnum) summ + censusCartPredictionsMatrix[rowcolnum,rowcolnum],
+                       seq(nrow(censusCartPredictionsMatrix)),0) / nrow(censusTest)
+censusCartAcc
+
+#4.3
+prp(censusCart,digits = 6)
