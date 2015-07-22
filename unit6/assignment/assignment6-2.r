@@ -16,7 +16,6 @@ airlinesNorm = predict(preproc, airline)
 summary(airlinesNorm)
 
 lapply(colnames(airlinesNorm),function(col) c(col,max(airlinesNorm[,col])))
-lapply(colnames(airlinesNorm),function(col) c(col,min(airlinesNorm[,col])))
 
 #2.1
 distances = dist(airlinesNorm,method="euclidean")
@@ -25,11 +24,15 @@ plot(clusterAirlinesNorm)
 
 #2.2
 airlinesNormClusters = cutree(clusterAirlinesNorm,k=5)
+# iterate over the list of cluster assignments and return true(1) only where a cluster assignment was 1.
+# then sum up all the 1's for the count of datapoints that have been assigned to cluster 1.
 Reduce(function(last,cur) last + cur, lapply(airlinesNormClusters,function(clusterNum) clusterNum == 1))
 
 #2.3 - 2.7
 #let's compare the centroids for each cluster
 #  You may want to compute the average values of the unnormalized data so that it is easier to interpret.
+# this will make (col,mean) pairings and then call rbind across all the (col,mean) sets
+# to make a table-ish thing.
 Reduce(rbind,lapply(colnames(airlinesNorm),function(col) c(col,tapply(airline[,c(col)], airlinesNormClusters, mean))))
 #alternatively
 #split the data into clusters then use lapply to apply the colMeans function to each cluster

@@ -108,3 +108,4 @@ selectLoans = subset(highInterest,highInterest$predicted.risk <= cutoff)
 nrow(selectLoans)
 sum(selectLoans$profit)
 sum(selectLoans$not.fully.paid)
+

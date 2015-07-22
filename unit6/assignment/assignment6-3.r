@@ -90,7 +90,7 @@ mean(normTrain$ReturnJan)
 mean(normTest$ReturnJan)
 #. Since normTest was constructed by subtracting by the mean ReturnJan value from the training set, this explains why the mean value of ReturnJan is slightly negative in normTest.
 
-#3.3
+#3.3 3.4
 set.seed(144)
 km = kmeans(normTrain,centers = 3)
 stocksClusters2 = (lapply(seq(3),function(grpIdx) subset(normTrain,km[1]$cluster == grpIdx)))
@@ -144,4 +144,6 @@ predictionAccuracy(confusion2,nrow(stocksTest2))
 predictionAccuracy(confusion3,nrow(stocksTest3))
 
 #4.4
-
+# swiped this from Cory.
+AllPredictions = c(PredictTest1, PredictTest2, PredictTest3)
+AllOutcomes = c(stocksTest1$PositiveDec, stocksTest2$PositiveDec, stocksTest3$PositiveDec)
