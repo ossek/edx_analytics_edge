@@ -1,3 +1,4 @@
+# comment
 stocks = read.csv("./StocksCluster.csv")
 #1.1
 str(stocks)
